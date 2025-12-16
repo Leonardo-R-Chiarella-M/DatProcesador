@@ -7,23 +7,28 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+// Iniciar sesión (Necesario si se usaran variables de sesión más adelante)
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Define la ruta raíz del proyecto (DATPROCESADOR)
-// Subimos solo un nivel (de /public/ a /DATPROCESADOR/)
 define('ROOT_PATH', dirname(__DIR__)); 
 define('APP_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app'); 
 
 
 // ---------------------------------------------------------
-// 2. Autocarga de Clases (Simplificado, sin Namespaces)
+// 2. Autocarga de Clases (Simplificado)
 // ---------------------------------------------------------
 
-spl_autoload_register(function ($class) {
+spl_autoload_register(function ($className) {
     
-    $class_path = str_replace('\\', DIRECTORY_SEPARATOR, $class); 
+    $class_path = str_replace('\\', DIRECTORY_SEPARATOR, $className); 
 
-    // Busca clases en las carpetas principales (controllers, models, core)
+    // Rutas para buscar Clases (Controladores, Modelos, Core)
     $paths_to_check = [
         APP_PATH . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $class_path . '.php', 
+        // Importante: Aquí se buscan AlumnoModel.php y Database.php
         APP_PATH . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $class_path . '.php',       
         APP_PATH . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . $class_path . '.php', 
     ];
@@ -41,7 +46,7 @@ spl_autoload_register(function ($class) {
 // 3. Inicio del Enrutamiento
 // ---------------------------------------------------------
 
-// Verificación de la clase base
+// Verificación de la clase base (DatosController)
 if (!class_exists('DatosController')) {
     die("Error crítico (500): DatosController no cargado.");
 }

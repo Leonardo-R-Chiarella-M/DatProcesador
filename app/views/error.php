@@ -32,7 +32,7 @@
         <?php endif; ?>
         
         <p>Por favor, contacte al administrador o revise los logs del servidor.</p>
-        <p><a href="/">Volver al Dashboard</a></p>
+        <p><a href="/DatProcesador">Volver al Dashboard</a></p>
     </div>
 </body>
 </html>
