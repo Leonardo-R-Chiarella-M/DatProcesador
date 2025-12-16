@@ -1,0 +1,19 @@
+# 1. Definir la Raíz de la Aplicación (DirectoryIndex)
+# Si alguien pide este directorio (DATPROCESADOR), buscará public/index.php
+# Nota: Esto SÓLO funcionará si AllowOverride All está activo.
+DirectoryIndex public/index.php
+
+# 2. Activar el motor de reescritura
+RewriteEngine On
+
+# 3. Definir la base de la URL (Ajusta si /DatProcesador/ no es la ruta real)
+RewriteBase /DatProcesador/ 
+
+# 4. Reglas de Reescritura para URLs Limpias
+# No reescribir si el archivo o directorio existe
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Si no existe, redirigir a public/index.php, pasando la URL como 'url'
+# La regla RewriteRule seguirá siendo fundamental para las URLs limpias (ej. /Datos/procesar)
+RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]

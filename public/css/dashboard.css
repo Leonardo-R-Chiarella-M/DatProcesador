@@ -1,0 +1,44 @@
+/* DATPROCESADOR/public/css/dashboard.css */
+
+body { 
+    font-family: Arial, sans-serif; 
+    background-color: #f8f9fa; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0;
+}
+
+.welcome-card { 
+    text-align: center; 
+    background: #ffffff; 
+    padding: 40px 60px; 
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    max-width: 500px;
+    /* Estilo de borde añadido para confirmación de carga */
+    border: 2px solid #007bff; 
+}
+
+.welcome-card h1 { 
+    color: #007bff; 
+    font-size: 2.5em; 
+    margin-bottom: 10px;
+}
+
+.welcome-card p { 
+    color: #555; 
+    font-size: 1.1em; 
+    margin-top: 5px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-top: 20px;
+    background-color: #28a745; 
+    color: white;
+    border-radius: 20px;
+    font-weight: bold;
+}
