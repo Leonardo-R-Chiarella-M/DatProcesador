@@ -1,55 +1,59 @@
 <?php
 
-// Clase sin namespace
 class Router { 
     
     public static function run() {
-        
         $url = self::parseUrl();
         
-        $controller = 'DatosController'; 
-        $method = 'dashboard';
-        $params = [];
+        // Valores por defecto para la raíz
+        if (empty($url[0])) {
+            require_once '../app/controllers/DatosController.php';
+            $controllerInstance = new DatosController();
+            $controllerInstance->dashboard();
+            return;
+        }
 
-        if (!empty($url[0])) {
-            $controller = ucfirst($url[0]) . 'Controller';
-        }
-        if (!empty($url[1])) {
-            $method = $url[1];
-        }
+        $controllerName = ucfirst($url[0]) . 'Controller';
+        $method = $url[1] ?? 'index'; // Si no hay método, busca 'index'
         $params = array_slice($url, 2);
 
-        try {
-            // Buscamos la clase en el ámbito global (sin namespace)
-            if (!class_exists($controller)) {
-                $controller = 'DatosController';
-                $method = 'dashboard';
-                $params = $url;
-                
-                if (!class_exists($controller)) {
-                    throw new \Exception("Controlador base 'DatosController' no encontrado (Fallo secundario).");
+        $controllerFile = '../app/controllers/' . $controllerName . '.php';
+
+        // 1. Validar si el ARCHIVO existe
+        if (file_exists($controllerFile)) {
+            require_once $controllerFile;
+            
+            // 2. Validar si la CLASE existe dentro del archivo
+            if (class_exists($controllerName)) {
+                $controllerInstance = new $controllerName();
+
+                // 3. Validar si el MÉTODO existe en la clase
+                if (method_exists($controllerInstance, $method)) {
+                    call_user_func_array([$controllerInstance, $method], $params);
+                } else {
+                    self::lanzarError("El método '{$method}' no existe.");
                 }
-            }
-
-            $controllerInstance = new $controller();
-
-            if (method_exists($controllerInstance, $method)) {
-                call_user_func_array([$controllerInstance, $method], $params);
             } else {
-                header("HTTP/1.0 404 Not Found");
-                // DatosController funciona sin namespace
-                DatosController::showError("404 No Encontrado", "El método '{$method}' no existe en el controlador '{$controller}'.");
+                self::lanzarError("La clase '{$controllerName}' no está definida.");
             }
-
-        } catch (\Throwable $e) {
-            DatosController::showError("Error Interno (500)", $e->getMessage() . "\nStack Trace:\n" . $e->getTraceAsString());
+        } else {
+            // AQUÍ ESTÁ LA LÓGICA QUE BUSCABAS: Si no encuentra el archivo, ERROR.
+            self::lanzarError("El controlador '{$controllerName}' no existe.");
         }
+    }
+
+    private static function lanzarError($mensaje) {
+        header("HTTP/1.0 404 Not Found");
+        // Asegúrate de que DatosController esté disponible para mostrar el error
+        if (!class_exists('DatosController')) {
+            require_once '../app/controllers/DatosController.php';
+        }
+        DatosController::showError("404 - No Encontrado", $mensaje);
     }
 
     private static function parseUrl() {
         if (isset($_GET['url'])) {
-            $url = filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL);
-            return explode('/', $url);
+            return explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
         }
         return []; 
     }
