@@ -23,7 +23,7 @@
         }
         input[type="file"] { display: none; }
 
-        /* GRID DE 4 COLUMNAS (Para que sean más anchas de costado) */
+        /* GRID DE 4 COLUMNAS */
         .cursos-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr); 
@@ -42,24 +42,28 @@
         
         .q-badge { background: #c6f6d5; color: #22543d; padding: 5px 12px; border-radius: 8px; font-size: 0.75em; font-weight: bold; }
 
-        /* Botones de acción principales (Azul y Negro) */
-        .btn-group-main { display: flex; gap: 10px; margin-bottom: 15px; }
+        /* Botones de acción principales */
+        .btn-group-main { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
         .btn-action { 
-            flex: 1; padding: 12px; border-radius: 8px; text-decoration: none; 
+            flex: 1; min-width: 80px; padding: 12px; border-radius: 8px; text-decoration: none; 
             font-weight: bold; font-size: 0.85em; text-align: center; color: white;
             display: flex; flex-direction: column; align-items: center; gap: 5px;
+            transition: 0.2s;
         }
         .btn-blue { background: #3182ce; }
         .btn-dark { background: #2d3748; }
+        .btn-success { background: #38a169; flex-basis: 100%; } /* Verde para resultados, ocupando ancho completo */
 
-        /* Enlaces de Editar y Borrar con iconos */
+        .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
+
+        /* Enlaces de Editar y Borrar */
         .btn-group-edit { 
             display: flex; justify-content: space-around; 
             border-top: 1px solid #edf2f7; padding-top: 15px; 
         }
         .link-action { text-decoration: none; font-size: 0.9em; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .link-edit { color: #f56565; } /* Color naranja/rojo de tu captura */
-        .link-delete { color: #a0aec0; } /* Color gris de tu captura */
+        .link-edit { color: #f56565; } 
+        .link-delete { color: #a0aec0; }
 
         .alert-success { background: #c6f6d5; color: #22543d; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #9ae6b4; font-weight: bold; }
     </style>
@@ -118,6 +122,9 @@
                             </a>
                             <a href="/DatProcesador/procesador/subir/<?php echo $curso['id']; ?>" class="btn-action btn-dark">
                                 <span>📄</span> .DAT
+                            </a>
+                            <a href="/DatProcesador/procesador/resultados/<?php echo $curso['id']; ?>" class="btn-action btn-success">
+                                <span>🏆</span> Ver Resultados Finales
                             </a>
                         </div>
                         
