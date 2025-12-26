@@ -21,6 +21,12 @@
             <a href="/DatProcesador/procesador/auditoria/<?php echo $curso['id']; ?>" style="background:#4a5568; color:white; padding:8px 15px; border-radius:8px; text-decoration:none; font-weight:bold;">🔍 Auditoría de Lectura</a>
             <a href="/DatProcesador/" style="text-decoration:none; color:#3182ce; font-weight:bold; border: 1px solid; padding: 8px; border-radius: 8px;">Dashboard</a>
         </div>
+        <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="/DatProcesador/procesador/exportarExcel/<?php echo $curso['id']; ?>" 
+       style="background-color: #2f855a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+       📊 Descargar Reporte Excel
+    </a>
+</div>
     </div>
 
     <table>

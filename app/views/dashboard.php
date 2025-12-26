@@ -99,6 +99,12 @@
                 <span id="file-name" style="font-size:0.8em; color:#a0aec0; font-style: italic;">Ningún archivo...</span>
                 <button type="submit" class="btn" style="background:#3182ce; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">Procesar</button>
             </form>
+            <div style="margin: 20px 0;">
+    <a href="/DatProcesador/procesador/exportarTodoExcel" 
+       style="background-color: #3182ce; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+       📁 Exportar Reporte Consolidado (Todos los Cursos)
+    </a>
+</div>
             <a href="/DatProcesador/cursos/crear" class="btn" style="background:#38a169; color:white; text-decoration:none; padding:10px 20px; border-radius:8px; font-weight:bold;">+ Nuevo Curso</a>
         </div>
     </div>
