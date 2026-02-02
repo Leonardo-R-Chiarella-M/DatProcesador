@@ -5,6 +5,7 @@ class AlumnoModel extends Database {
     public function listarTodos() {
         try {
             $dbh = $this->getDbh();
+            // Selecciona todos los campos, incluyendo fase y descripcion
             $stmt = $dbh->query("SELECT * FROM alumnos ORDER BY id DESC");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) { return []; }
@@ -17,18 +18,49 @@ class AlumnoModel extends Database {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function insertar($dni, $nombre, $descripcion) {
+    /**
+     * Inserta un alumno o actualiza sus datos si el DNI ya existe
+     */
+    public function insertar($dni, $nombre, $fase, $descripcion) {
         $dbh = $this->getDbh();
-        $sql = "INSERT INTO alumnos (dni, nombre_completo, descripcion) VALUES (:dni, :nombre, :desc)";
+        // Se añade la columna 'fase' y la lógica de actualización por duplicado
+        $sql = "INSERT INTO alumnos (dni, nombre_completo, fase, descripcion) 
+                VALUES (:dni, :nombre, :fase, :desc)
+                ON DUPLICATE KEY UPDATE 
+                nombre_completo = VALUES(nombre_completo), 
+                fase = VALUES(fase), 
+                descripcion = VALUES(descripcion)";
+        
         $stmt = $dbh->prepare($sql);
-        return $stmt->execute([':dni' => $dni, ':nombre' => $nombre, ':desc' => $descripcion]);
+        return $stmt->execute([
+            ':dni'    => $dni, 
+            ':nombre' => $nombre, 
+            ':fase'   => $fase, 
+            ':desc'   => $descripcion
+        ]);
     }
 
-    public function actualizar($id, $dni, $nombre, $descripcion) {
+    /**
+     * Actualiza un registro específico desde el formulario de edición
+     */
+    public function actualizar($id, $dni, $nombre, $fase, $descripcion) {
         $dbh = $this->getDbh();
-        $sql = "UPDATE alumnos SET dni = :dni, nombre_completo = :nombre, descripcion = :desc WHERE id = :id";
+        // Se incluye 'fase' en la sentencia UPDATE
+        $sql = "UPDATE alumnos SET 
+                dni = :dni, 
+                nombre_completo = :nombre, 
+                fase = :fase, 
+                descripcion = :desc 
+                WHERE id = :id";
+        
         $stmt = $dbh->prepare($sql);
-        return $stmt->execute([':dni' => $dni, ':nombre' => $nombre, ':desc' => $descripcion, ':id' => $id]);
+        return $stmt->execute([
+            ':dni'    => $dni, 
+            ':nombre' => $nombre, 
+            ':fase'   => $fase, 
+            ':desc'   => $descripcion, 
+            ':id'     => $id
+        ]);
     }
 
     public function eliminarPorId($id) {

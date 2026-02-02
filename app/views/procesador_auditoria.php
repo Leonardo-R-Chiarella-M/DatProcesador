@@ -49,7 +49,9 @@
                     </select>
                 </div>
                 <div style="flex-grow: 1;">
-                    <label class="label-style">Nombre del Alumno:</label>
+                    <label class="label-style">
+                        Alumno (Fase: <?php echo htmlspecialchars($r['fase'] ?? '---'); ?> | Desc: <?php echo htmlspecialchars($r['descripcion'] ?? '---'); ?>):
+                    </label>
                     <input type="text" value="<?php echo $r['nombre_completo'] ?? 'NO VINCULADO'; ?>" disabled style="width: 100%; opacity: 0.5;">
                 </div>
             </div>
@@ -61,17 +63,18 @@
                             if (empty(trim($r['respuestas_alumno']))) {
                                 $prefijo = "514489";
                                 $posPrefijo = strpos($r['linea_original'], $prefijo);
-                                echo htmlspecialchars(substr($r['linea_original'], $posPrefijo + 15, 30));
+                                // Intentamos rescatar de la línea original si la columna está vacía
+                                echo htmlspecialchars(substr($r['linea_original'], $posPrefijo + 15)); 
                             } else {
                                 echo htmlspecialchars($r['respuestas_alumno']);
                             }
                        ?>" 
-                       maxlength="30" class="respuestas-input">
+                       maxlength="100" class="respuestas-input">
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="font-weight: bold; font-size: 0.9em;">
-                    Puntaje: <span style="color:#63b3ed; font-size: 1.2em;"><?php echo number_format($r['puntaje_total'], 4); ?></span>
+                    Puntaje Actual: <span style="color:#63b3ed; font-size: 1.2em;"><?php echo number_format($r['puntaje_total'], 4); ?></span>
                 </div>
                 <button type="submit" class="btn-update">💾 Guardar y Recalificar</button>
             </div>

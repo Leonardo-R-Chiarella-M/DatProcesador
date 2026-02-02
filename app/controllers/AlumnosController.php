@@ -33,7 +33,8 @@ class AlumnosController extends DatosController {
     }
 
     /**
-     * Procesa la carga de archivos CSV y redirige al listado
+     * Procesa la carga de archivos CSV con 4 columnas separadas por ';'
+     * Formato esperado: DNI;NOMBRE;FASE;DESCRIPCION
      */
     public function procesar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['datFile'])) {
@@ -42,28 +43,33 @@ class AlumnosController extends DatosController {
             $count = 0;
 
             while (($line = fgets($handle)) !== false) {
-                $datos = explode(';', trim($line));
+                $lineaLimpia = trim($line);
+                if (empty($lineaLimpia)) continue;
+
+                // Separador por punto y coma (;)
+                $datos = explode(';', $lineaLimpia);
+                
                 if (count($datos) >= 2) {
-                    $dni = trim($datos[0]);
-                    $nombre = trim($datos[1]);
-                    $desc = isset($datos[2]) ? trim($datos[2]) : '';
-                    if ($model->insertar($dni, $nombre, $desc)) {
+                    $dni    = trim($datos[0]); 
+                    $nombre = trim($datos[1]); 
+                    
+                    // Captura Fase y Descripción de las posiciones 2 y 3
+                    $fase   = isset($datos[2]) ? trim($datos[2]) : ''; 
+                    $desc   = isset($datos[3]) ? trim($datos[3]) : ''; 
+                    
+                    if ($model->insertar($dni, $nombre, $fase, $desc)) {
                         $count++;
                     }
                 }
             }
             fclose($handle);
             
-            // REDIRECCIÓN DIRECTA AL LISTADO
             header("Location: /DatProcesador/alumnos/verTabla?status=success&count=$count");
             exit();
         }
         header("Location: /DatProcesador/?status=error");
     }
 
-    /**
-     * Carga el formulario de edición
-     */
     public function editar($id) {
         $model = new AlumnoModel();
         $alumno = $model->obtenerPorId($id);
@@ -74,21 +80,21 @@ class AlumnosController extends DatosController {
         }
 
         $this->render('alumno_editar', [
-            'alumno' => $alumno,
+            'alumno'   => $alumno,
             'base_url' => '/DatProcesador/'
         ]);
     }
 
-    /**
-     * Procesa la actualización de un alumno
-     */
     public function actualizar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $model = new AlumnoModel();
+            
+            // Enviamos 5 parámetros al modelo incluyendo Fase
             $exito = $model->actualizar(
                 $_POST['id'], 
                 $_POST['dni'], 
                 $_POST['nombre_completo'], 
+                $_POST['fase'], 
                 $_POST['descripcion']
             );
 
@@ -100,9 +106,6 @@ class AlumnosController extends DatosController {
         header("Location: /DatProcesador/alumnos/verTabla?status=error");
     }
 
-    /**
-     * Elimina un registro individual
-     */
     public function eliminar($id) {
         $model = new AlumnoModel();
         if ($model->eliminarPorId($id)) {
@@ -111,9 +114,6 @@ class AlumnosController extends DatosController {
         }
     }
 
-    /**
-     * BOTÓN MASIVO: Limpia la tabla y reinicia el ID a 1
-     */
     public function reiniciarTabla() {
         $model = new AlumnoModel();
         if ($model->truncarAlumnos()) {
